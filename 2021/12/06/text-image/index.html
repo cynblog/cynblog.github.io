@@ -18,15 +18,19 @@
   
   
   <title>text-image | Hexo</title>
-  <meta property="og:type" content="article">
+  <meta name="description" content="1、Learning Transferable Visual Models From Natural Language Supervision（CLIP）文章链接：2103.00020.pdf Main idea:-现有的state-of-the-art cv方法一般用于预测预先定义好的object 类别，由于在用于其他视觉任务时需要引入额外的标注，导致这些模型在泛化性较差。 -通过描述image">
+<meta property="og:type" content="article">
 <meta property="og:title" content="text-image">
 <meta property="og:url" content="http://example.com/2021/12/06/text-image/index.html">
 <meta property="og:site_name" content="Carlos Homepage">
+<meta property="og:description" content="1、Learning Transferable Visual Models From Natural Language Supervision（CLIP）文章链接：2103.00020.pdf Main idea:-现有的state-of-the-art cv方法一般用于预测预先定义好的object 类别，由于在用于其他视觉任务时需要引入额外的标注，导致这些模型在泛化性较差。 -通过描述image">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211207111207094.png">
 <meta property="article:published_time" content="2021-12-06T09:14:49.000Z">
-<meta property="article:modified_time" content="2021-12-06T09:15:12.276Z">
+<meta property="article:modified_time" content="2021-12-07T03:48:33.762Z">
 <meta property="article:author" content="Carlos">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/12/06/text-image/image-20211207111207094.png">
   <!-- Canonical links -->
   <link rel="canonical" href="http://example.com/2021/12/06/text-image/index.html">
   
@@ -272,7 +276,26 @@
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        
+        <h1 id="1、Learning-Transferable-Visual-Models-From-Natural-Language-Supervision（CLIP）"><a href="#1、Learning-Transferable-Visual-Models-From-Natural-Language-Supervision（CLIP）" class="headerlink" title="1、Learning Transferable Visual Models From Natural Language Supervision（CLIP）"></a>1、Learning Transferable Visual Models From Natural Language Supervision（CLIP）</h1><p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2103.00020.pdf">2103.00020.pdf</a></p>
+<h3 id="Main-idea"><a href="#Main-idea" class="headerlink" title="Main idea:"></a>Main idea:</h3><p>-现有的state-of-the-art cv方法一般用于预测预先定义好的object 类别，由于在用于其他视觉任务时需要引入额外的标注，导致这些模型在泛化性较差。</p>
+<p>-通过描述image的text可以提供更加广泛的监督。这篇文章提出了一个简单的预训练任务，预测image的caption，学习到了有效的可泛化的特征。利用了400million（image， text）对。经过预训练可以实现zero-shot transfer to downstream tasks。</p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction:"></a>Introduction:</h3><p> Scalable pre-training的NLP方法通过从大量的网络text中学习取得了有效的有突破性的进步。是否能够在cv领域取得类似的成就？</p>
+<p>-之前有一些工作利用text辅助学习image representations。</p>
+<p>[1] Learning visual representations from textual annotations</p>
+<p>[2] Learning visual representations with caption annotations.</p>
+<p>[3] Contrastive learning of medical visual representations from paired images and text. </p>
+<p>-有关自然语言辅助的图片特征学习的证明比较少，可能是因为之前的方法仅仅取得了有限的有效性。</p>
+<p>-之前的方法使用的是固定的softmax分类器，没法动态的输出，导致了zero-shot的预测能力有限。</p>
+<p>-之前的text监督的image representation 学习的数据量有限</p>
+<p>这篇文章通过大量的互联网上可用的数据创建了一个400million的（image，text）数据对，并提出contrastive language-image pre-training方法，学习到了有效的特征。</p>
+<h3 id="Approach"><a href="#Approach" class="headerlink" title="Approach:"></a>Approach:</h3><h4 id="Natural-language-superviseion"><a href="#Natural-language-superviseion" class="headerlink" title="Natural language superviseion"></a>Natural language superviseion</h4><p>优点：自然语言不需要像传统机器学习方法那样进行标注，更加容易获取监督数据。通过自然语言学习特征，还可以进行zero-shot transfer。</p>
+<h4 id="Creating-a-sufficiently-large-dataset"><a href="#Creating-a-sufficiently-large-dataset" class="headerlink" title="Creating a sufficiently large dataset"></a>Creating a sufficiently large dataset</h4><p>之前的方法没有充分的利用网络上的image数据，这个工作充分的利用了网络上的数据构建了一个足够大的image-text数据集。</p>
+<h4 id="Selecting-an-Efficient-Pre-Training-Method"><a href="#Selecting-an-Efficient-Pre-Training-Method" class="headerlink" title="Selecting an Efficient Pre-Training Method"></a>Selecting an Efficient Pre-Training Method</h4><p>之前的方法往往直接预测与图片相关的文本中的确定的words，由于文本变化的多样性，这是一个非常难的任务。这个工作通过对比的方式，匹配text和image，不是通过预测具体的词，实现了有效的提升。</p>
+<p><img src="/2021/12/06/text-image/image-20211207111207094.png" alt="image-20211207111207094"></p>
+<p>具体来说，给定一个batch，包括N个image，text对，CLIP预测这个batch中N*N个可能的对中真实的对。CLIP通过同时训练一个image encoder和text encoder学习了一个多模态的embedding space。最大化N个真实数据对的cosine similarity，最小化N * N - N不正确数据对的相似性。</p>
+<p>image encoder使用了两种，基于resnet，以及基于ViT。</p>
+<p>text encoder使用的是transformer。</p>
+<h3 id><a href="#" class="headerlink" title></a></h3>
       
     </div>
     <div class="article-footer">
