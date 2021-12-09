@@ -26,8 +26,16 @@
 <meta property="og:description" content="1、Learning Transferable Visual Models From Natural Language Supervision（CLIP）文章链接：2103.00020.pdf Main idea:-现有的state-of-the-art cv方法一般用于预测预先定义好的object 类别，由于在用于其他视觉任务时需要引入额外的标注，导致这些模型在泛化性较差。 -通过描述image">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211207111207094.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208103142349.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208105431946.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208152736592.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208161252055.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208161313607.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208174614067.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208173644174.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208174752304.png">
 <meta property="article:published_time" content="2021-12-06T09:14:49.000Z">
-<meta property="article:modified_time" content="2021-12-07T03:48:33.762Z">
+<meta property="article:modified_time" content="2021-12-08T10:14:49.852Z">
 <meta property="article:author" content="Carlos">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2021/12/06/text-image/image-20211207111207094.png">
@@ -295,7 +303,51 @@
 <p>具体来说，给定一个batch，包括N个image，text对，CLIP预测这个batch中N*N个可能的对中真实的对。CLIP通过同时训练一个image encoder和text encoder学习了一个多模态的embedding space。最大化N个真实数据对的cosine similarity，最小化N * N - N不正确数据对的相似性。</p>
 <p>image encoder使用了两种，基于resnet，以及基于ViT。</p>
 <p>text encoder使用的是transformer。</p>
-<h3 id><a href="#" class="headerlink" title></a></h3>
+<h1 id="2、Learning-Visual-Representations-with-Caption-Annotations"><a href="#2、Learning-Visual-Representations-with-Caption-Annotations" class="headerlink" title="2、Learning Visual Representations with Caption Annotations"></a>2、Learning Visual Representations with Caption Annotations</h1><p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2008.01392">arXiv:2008.01392</a></p>
+<h3 id="Main-idea-1"><a href="#Main-idea-1" class="headerlink" title="Main idea:"></a>Main idea:</h3><p>近期的预训练相关的工作开始利用带有噪声，甚至是无标注的数据进行预训练。带有标题的图片是容易获取的，这种信息可以用来监督视觉特征的学习。这个工作提出利用image-caption对学习视觉特征（image-conditioned masked language modeling(ICMLM)）。ICMLIM 基于视觉线索预测caption中masked words。</p>
+<h3 id="Introduction："><a href="#Introduction：" class="headerlink" title="Introduction："></a>Introduction：</h3><p>基于监督学习的方法加快了CV的发展，但是存在两个问题，一个是标注的数据不易获取，另外一个是对新任务的迁移比较麻烦。自监督方法同样需要大量的计算资源才能实现较好的实验结果。</p>
+<p>幸运的是captioned image数据是比较多的。这个工作认为通过captions学习视觉特征可以大幅度减少对训练数据集的需求。而且即使没有文本，也可以容易地自动构建文本信息。之前的方法没有很好的考虑这一文本信息。为了利用文本信息学习视觉特征，这个工作提出了两个proxy tasks，一个是预测image tags，一个是通过masked captions学习视觉特征。通过可视化可以发现第二个任务能够有效的利用文本，并且较好的关注到图像的特定regions。</p>
+<img src="/2021/12/06/text-image/image-20211208103142349.png" alt="image-20211208103142349" style="zoom:50%;">
+
+
+
+<h3 id="Approach："><a href="#Approach：" class="headerlink" title="Approach："></a>Approach：</h3><img src="/2021/12/06/text-image/image-20211208105431946.png" alt="image-20211208105431946" style="zoom:50%;">
+
+<p>这个工作假定文本信息能够辅助提升视觉特征的学习，构建了两个proxy任务。这两个任务能够利用文本的结构信息。</p>
+<p>包括两个proxy tasks。第一个task预测image-level tags，学习global层的image 信息。第二个task通过mask word，学习local层的image语义信息。</p>
+<p>框图包括五块，（1）提出视觉特征。（2）编码语言的token特征。（3）tfm, 利用 transformer从visual and text feature预测masked token （4）只基于visual feature预测masked token。（5）tag prediction </p>
+<h4 id="Capturing-image-level-semantics"><a href="#Capturing-image-level-semantics" class="headerlink" title="Capturing image-level semantics"></a>Capturing image-level semantics</h4><p>模块1+5。根据图像中可能出现的concepts，构建一个multi-label图像分类任务。基于文本，构建一个multi-label 的label vector，$ \left { 0, 1 \right }^K $。这些label可以被看作是tags，因此预训练任务为tag prediction。这个工作考虑了多个构建tags的方法，tag表示了文本的global信息。（语言模型不熟，后面再学习）</p>
+<h4 id="Capturing-localized-semantics"><a href="#Capturing-localized-semantics" class="headerlink" title="Capturing localized semantics"></a>Capturing localized semantics</h4><p>扩展masked language model到image-conditioned 情况。通过image 特征预测masked tokens。以使得学习到的视觉特征能够学习足够的信息，重构出caption中的missing information。两种方式：</p>
+<p>(1)+(2)+(3) 基于transformer，利用visual 和text feature预测masked token。</p>
+<p>(1)+(2)+(4) 前一种方式由于有text信息，text信息已经足够预测masked信息，可能会导致视觉特征学习的比较差，这里只利用视觉特征预测token。（4）中包括两步，localizing concept和predicting labels。localizing输入视觉特征和文本特征，计算attention map。利用attention map和视觉特征预测masked token。</p>
+<h1 id="3、CONTRASTIVE-LEARNING-OF-MEDICAL-VISUAL-REPRESENTATIONS-FROM-PAIRED-IMAGES-AND-TEXT"><a href="#3、CONTRASTIVE-LEARNING-OF-MEDICAL-VISUAL-REPRESENTATIONS-FROM-PAIRED-IMAGES-AND-TEXT" class="headerlink" title="3、CONTRASTIVE LEARNING OF MEDICAL VISUAL REPRESENTATIONS FROM PAIRED IMAGES AND TEXT"></a>3、CONTRASTIVE LEARNING OF MEDICAL VISUAL REPRESENTATIONS FROM PAIRED IMAGES AND TEXT</h1><p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2010.00747">arXiv:2010.00747</a></p>
+<h3 id="Introduction-1"><a href="#Introduction-1" class="headerlink" title="Introduction"></a>Introduction</h3><p>现有的medical image understanding主要受限于标注数据不足的问题。为了解决数据的问题，现有的方法包括两种。第一种利用ImageNet数据集上预训练的参数初始化，但是imagenet上的数据和medical image有着比较大的差异，并没有起到很好的效果。第二种利用容易获取的带有medical image的文本报告总结expert-crafted rules。但是这种基于规则的标注方法有两个限制，一方面规则往往是不准确的，另一方面这些规则往往是领域特定的，不利于cross-domain。之前也有方法提出基于图像的对比学习方法，但是仅仅取得了有限的效果。</p>
+<p>这篇文章旨在于联合文本数据和无监督方法，改进medical images的特征学习。方法意图最大化真实image和text之间的一致性。实现了比较好的特征学习结果。</p>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><img src="/2021/12/06/text-image/image-20211208152736592.png" alt="image-20211208152736592" style="zoom:50%;">
+
+
+
+<p>输入为 $ X_v，X_u $对，$X_v$表示images，$X_u$ 表示对应的描述文本。目标是学习一个image encoder $f_v$ 编码图像的特征。在实际的场景中，成对的text-image对比较容易获取。对输入$ X_v，X_u $经过image 和text encoder得到提取的特征$h_v, h_u$。类似contrastive learning经过projection function得到high-level feature v 和u。对比学习包括两个loss：</p>
+<p>对于每个$v_i$，计算对比学习损失，使得对应文本$u_i$的相似性接近，$v_i$非配对的$u_k$相似性变远。</p>
+<img src="/2021/12/06/text-image/image-20211208161252055.png" alt="image-20211208161252055" style="zoom:50%;">
+
+<p>对于每个$u_i$，计算对比学习损失，使得对应图像$v_i$的相似性接近，$u_i$非配对的$v_k$相似性变远。</p>
+<img src="/2021/12/06/text-image/image-20211208161313607.png" alt="image-20211208161313607" style="zoom:50%;">
+
+
+
+<h1 id="4、VirTex-Learning-Visual-Representations-from-Textual-Annotations"><a href="#4、VirTex-Learning-Visual-Representations-from-Textual-Annotations" class="headerlink" title="4、VirTex: Learning Visual Representations from Textual Annotations"></a>4、VirTex: Learning Visual Representations from Textual Annotations</h1><p>论文链接：<a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content/CVPR2021/papers/Desai_VirTex_Learning_Visual_Representations_From_Textual_Annotations_CVPR_2021_paper.pdf">VirTex</a></p>
+<h4 id="Main-idea-2"><a href="#Main-idea-2" class="headerlink" title="Main idea:"></a>Main idea:</h4><p>这篇文章提出利用语义密集的文本信息学习视觉特征。学习到了比较好的结果。</p>
+<h4 id="Introduction-2"><a href="#Introduction-2" class="headerlink" title="Introduction"></a>Introduction</h4><p>之前的方法大多是利用在ImageNet等数据集上预训练的网络参数。但这种方法需要人工标注的images。最近的方法开始利用无标注的images辅助学习视觉特征，这种方法需要海量的数据。这个工作企图利用更少的image学习高质量的特征。</p>
+<p><img src="/2021/12/06/text-image/image-20211208174614067.png" alt="image-20211208174614067"></p>
+<p>如Fig 2，相比unsupervised contrastive learning以及有监督分类，文本能够提供高语义密度的信息。并且文本是更加容易收集的。</p>
+<img src="/2021/12/06/text-image/image-20211208173644174.png" alt="image-20211208173644174" style="zoom:50%;">
+
+<p>这个工作提出利用caption 标注学习视觉特征，如Fig 1。这里利用一个convnet和一个transformer生成图片的captions。之后将这个学到的特征transfer到下游的视觉识别任务中。</p>
+<h4 id="Method-1"><a href="#Method-1" class="headerlink" title="Method"></a>Method</h4><p><img src="/2021/12/06/text-image/image-20211208174752304.png" alt="image-20211208174752304"></p>
+<p>方法试图通过训练image captioning 模型预测图片的caption信息，如Fig 3。模型包括两个部分，visual backbone用于提取图片的视觉特征，textual head用于利用提取的视觉特征token by token的预测caption。textual head 包括前向和后向预测transformer网络分别left-to-right和right-to-left预测caption。</p>
+<p>下游任务中仅仅使用visual backbone网络。</p>
+
       
     </div>
     <div class="article-footer">
