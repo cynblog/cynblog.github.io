@@ -28,8 +28,14 @@
 <meta property="og:image" content="http://example.com/2021/12/06/self-supervised/image-20211206164708827.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210216163459509.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQ0MDU1NzA1,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="http://example.com/2021/12/06/self-supervised/image-20211206154434100.png">
+<meta property="og:image" content="http://example.com/2021/12/06/self-supervised/image-20211211154459056.png">
+<meta property="og:image" content="http://example.com/2021/12/06/self-supervised/image-20211211160523558.png">
+<meta property="og:image" content="http://example.com/2021/12/06/self-supervised/image-20211215114931867.png">
+<meta property="og:image" content="http://example.com/2021/12/06/self-supervised/image-20211215115358510.png">
+<meta property="og:image" content="http://example.com/2021/12/06/self-supervised/image-20211215115639716.png">
+<meta property="og:image" content="http://example.com/2021/12/06/self-supervised/image-20211215115853977.png">
 <meta property="article:published_time" content="2021-12-06T09:09:39.000Z">
-<meta property="article:modified_time" content="2021-12-06T09:30:56.553Z">
+<meta property="article:modified_time" content="2021-12-15T03:59:14.826Z">
 <meta property="article:author" content="Carlos">
 <meta property="article:tag" content="self-supervised">
 <meta name="twitter:card" content="summary">
@@ -308,6 +314,28 @@
 <p>Reconstruction target</p>
 <p>​        重构的目标是预测masked patch的pixel values。</p>
 <p><img src="/2021/12/06/self-supervised/image-20211206154434100.png" alt="image-20211206154434100">                       </p>
+<h1 id="2、Self-Supervised-Representation-Learning-by-Rotation-Feature-Decoupling"><a href="#2、Self-Supervised-Representation-Learning-by-Rotation-Feature-Decoupling" class="headerlink" title="2、Self-Supervised Representation Learning by Rotation Feature Decoupling"></a>2、Self-Supervised Representation Learning by Rotation Feature Decoupling</h1><h3 id="Main-idea："><a href="#Main-idea：" class="headerlink" title="Main idea："></a>Main idea：</h3><p>这一工作利用rotation invariance 学习self-supervised representation。这一方法将特征划分成rotation related 和unrelated parts，网络同时预测image rotation并判定individual instances，从而解耦了rotation discrimination以及instance discrimination，减轻了rotation label noise的影响，提升了rotation prediction的效果，提升了特征学习的效果。</p>
+<img src="/2021/12/06/self-supervised/image-20211211154459056.png" alt="image-20211211154459056" style="zoom:50%;">
+
+<h3 id="Introduction-1"><a href="#Introduction-1" class="headerlink" title="Introduction:"></a>Introduction:</h3><p>supervised method需要全标注的数据，这在实际应用中较难实现。</p>
+<p>self-supervised method可以利用无标注的数据实现较好的特征学习效果。多种自监督任务被提出进行self-supervised learning，但是都存在一定的问题。</p>
+<p>之前的自监督任务主要关注自监督任务的设计，而没有充分的考虑学到的特征的实际效果。例如预测image rotations的方法学习到的特征是rotation transformation是可区分的，但是对旋转不变的任务没有很好的效果。如Fig 1所示，这些图片旋转后并没有显著的影响他们的意义。</p>
+<p>这个工作提出了一种自监督的学习方法，通过一个rotation prediction task和一个instance discrimination task解耦特征。学习到的特征包括两部分，一部分是旋转可区分的，一个部分是旋转无关的。旋转可区分的特征通过预测图片旋转学习，可以在一些场景中得到较好的结果。对于数据集中方向未知的图片，自动的分配角度标签显然是包含噪声的。针对这类问题，将原始的图像的默认方向看作是postive instances， rotated copies可以positive也可是negative。如果一个rotated copy的旋转状态不易被识别，那么把他当作是postive instance。另外方法惩罚同一图片不同角度下的特征的距离，并利用非参数的方法从这些旋转无关的特征中区分different instance，从而实现instance discrimination。</p>
+<p><img src="/2021/12/06/self-supervised/image-20211211160523558.png" alt="image-20211211160523558"></p>
+<h1 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h1><p>Image rotation prediction任务用于训练特征的前提是旋转一个图片会改变图片中物体的方向，这个方向的变化应该是容易识别的。因此为了预测图片的旋转，神经网络需要识别定位突出的object，因此网络能够学习到突出目标的准确特征，并在下游任务在取得较好的效果，例如目标检测，语义分割。这种前提在实际中很容易满足，因为很多物体都有默认的方向，如果经过旋转能够很容易被区分。</p>
+<p>但是这种前提在方向不可分的情况下是不满足的。这种情况下识别角度的信息将没有太大的意义。也就是说角度标签是noisy。</p>
+<p>首先是噪声数据的处理，采用自适应加权的方式。对于数据集中原始图片，权重为1，对于旋转的图片，引入一个分类任务，输出为样本预测为非旋转的概率，预测的概率越大说明样本越是角度模糊的，所以权重越小。如公式（2）所示，公式三为加权的结果。</p>
+<img src="/2021/12/06/self-supervised/image-20211215114931867.png" alt="image-20211215114931867" style="zoom:50%;">
+
+<p>针对整个学习框架包括两种特征，一种是角度相关的特征，一种是角度无关的特征。角度相关的特征进行角度的预测，考虑了noise信息。公式如（4）所示。</p>
+<img src="/2021/12/06/self-supervised/image-20211215115358510.png" alt="image-20211215115358510" style="zoom:50%;">
+
+<p>针对角度无关的特征，希望来自同一图片的不同样本的特征相接近，这里首先计算了多个样本特征平均值，使得各个特征和平均值相接近。</p>
+<img src="/2021/12/06/self-supervised/image-20211215115639716.png" alt="image-20211215115639716" style="zoom:50%;">
+
+<p>这种计算方法可能使得样本特征缺乏多样性，引入了instance classification loss使得原图片中不同样本的特征相远离。</p>
+<img src="/2021/12/06/self-supervised/image-20211215115853977.png" alt="image-20211215115853977" style="zoom:50%;">
+
 
       
     </div>
