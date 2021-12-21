@@ -34,8 +34,13 @@
 <meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208174614067.png">
 <meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208173644174.png">
 <meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211208174752304.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211221151755897.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211221153119816.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211221155052497.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211221171019691.png">
+<meta property="og:image" content="http://example.com/2021/12/06/text-image/image-20211221172726779.png">
 <meta property="article:published_time" content="2021-12-06T09:14:49.000Z">
-<meta property="article:modified_time" content="2021-12-08T10:14:49.852Z">
+<meta property="article:modified_time" content="2021-12-21T10:22:45.522Z">
 <meta property="article:author" content="Carlos">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2021/12/06/text-image/image-20211207111207094.png">
@@ -165,7 +170,7 @@
   <div class="widget">
     <h3 class="widget-title">标签</h3>
     <div class="widget-body">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/self-supervised/" rel="tag">self-supervised</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/self-supervised/" rel="tag">self-supervised</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -175,7 +180,7 @@
   <div class="widget">
     <h3 class="widget-title">标签云</h3>
     <div class="widget-body tagcloud">
-      <a href="/tags/self-supervised/" style="font-size: 13px;">self-supervised</a>
+      <a href="/tags/self-supervised/" style="font-size: 13px;">self-supervised</a> <a href="/tags/tools/" style="font-size: 13px;">tools</a>
     </div>
   </div>
 
@@ -184,7 +189,7 @@
   <div class="widget">
     <h3 class="widget-title">归档</h3>
     <div class="widget-body">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -196,6 +201,21 @@
     <div class="widget-body">
       <ul class="recent-post-list list-unstyled no-thumbnail">
         
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2021/12/15/tools/" class="title">tools</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-12-15T06:55:59.000Z" itemprop="datePublished">2021-12-15</time>
+              </p>
+            </div>
+          </li>
+          
           <li>
             
             <div class="item-inner">
@@ -347,6 +367,39 @@
 <h4 id="Method-1"><a href="#Method-1" class="headerlink" title="Method"></a>Method</h4><p><img src="/2021/12/06/text-image/image-20211208174752304.png" alt="image-20211208174752304"></p>
 <p>方法试图通过训练image captioning 模型预测图片的caption信息，如Fig 3。模型包括两个部分，visual backbone用于提取图片的视觉特征，textual head用于利用提取的视觉特征token by token的预测caption。textual head 包括前向和后向预测transformer网络分别left-to-right和right-to-left预测caption。</p>
 <p>下游任务中仅仅使用visual backbone网络。</p>
+<h1 id="5、Oscar-Object-Semantics-Aligned-Pre-training-for-Vision-Language-Tasks"><a href="#5、Oscar-Object-Semantics-Aligned-Pre-training-for-Vision-Language-Tasks" class="headerlink" title="5、Oscar: Object-Semantics Aligned Pre-training for Vision-Language Tasks"></a>5、Oscar: Object-Semantics Aligned Pre-training for Vision-Language Tasks</h1><p>论文<a target="_blank" rel="noopener" href="https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123750120.pdf">链接</a></p>
+<h4 id="Main-idea-3"><a href="#Main-idea-3" class="headerlink" title="Main idea"></a>Main idea</h4><p>之前的方法采用强行对准的方式，使得image-text semantic alignment，这个工作利用图片中的objects tags 作为anchor points，减轻对齐的难度。这一方法受启发于图片中的突出object往往会被准确的检测，并在对应的文本描述中高频率的被提及。</p>
+<h4 id="Introduction-3"><a href="#Introduction-3" class="headerlink" title="Introduction"></a>Introduction</h4><p>学习跨模态的特征在视觉语言任务中非常重要。视觉语言预训练方法已经证明了其有效性。（VLP）</p>
+<p>之前的VLP方法诉诸于利用self-attention 机制学习semantic alignment between image regions and text。然而image region和text pose之间缺少明确的alignment information。这使得图像区域和文本之间的alignment变的比较困难。</p>
+<p>这个文章表明，引入图片中的object tags能够减轻image-text semantic alignment的难度。这个工作提出了一种新的VLP方法，训练samples是一个三元组，（word sequence， object tags， image region feature）。</p>
+<h4 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h4><img src="/2021/12/06/text-image/image-20211221151755897.png" alt="image-20211221151755897" style="zoom:50%;">
+
+<p>如图Fig.2a，图像文本任务的输入一般为image-text 对。现有的基于image-text的预训练方法主要有两个问题：</p>
+<p>1、visual region feature可能存在重叠，因此提出的视觉特征具有模糊性。</p>
+<p>2、由于缺少图片和text的明确对应，region feature和text之间的对应是不明确的，这种对应通过网络自学，是一个弱监督的问题。</p>
+<p>因此这篇文章提出利用图片中的salient object的tag作为anchor points，使得image region和textual units semantic alignment。</p>
+<h4 id="Method-2"><a href="#Method-2" class="headerlink" title="Method"></a>Method</h4><p>动机：text-image中的重要信息会被同时包含。因此目标是同时捕捉两个模态间共有的信息。</p>
+<img src="/2021/12/06/text-image/image-20211221153119816.png" alt="image-20211221153119816" style="zoom:50%;">
+
+<p>方法的输入是三元组（w, q, v），分别对应于text embedding sequence, object tags(text)，region vectors of images。通过引入object tags，使得object 区域的权重更大，减轻text，region feature对准的难度。这里利用Faster R-CNN提取图片中多个区域的特征，并加上region position作为region feature。进一步利用Faster R-CNN检测高准确度的object tags。</p>
+<p>预训练：</p>
+<p>三元组可以从两个不同的方面来看待：</p>
+<img src="/2021/12/06/text-image/image-20211221155052497.png" alt="image-20211221155052497" style="zoom:50%;">
+
+<p>a dictionary view: 此时文本tokens和object tags共享相同的语义空间，image region feature位于viusal semantic space。利用masked token loss进行预训练。在（w, q）中随机mask token，基于unmasked tokens和image feature v预测masked tokens。</p>
+<p>a modality view：此时（q, v）表示image modality， w为language modality。这里sample出一组污染的image representations，以50%随机取代image representation中的q。基于transformer 【cls】位的输出预测特征是orginal或者polluted。这里可以理解为基于w, v预测q是否一致。</p>
+<h1 id="6、VIVO-Visual-Vocabulary-Pre-Training-for-Novel-Object-Captioning"><a href="#6、VIVO-Visual-Vocabulary-Pre-Training-for-Novel-Object-Captioning" class="headerlink" title="6、VIVO: Visual Vocabulary Pre-Training for Novel Object Captioning"></a>6、VIVO: Visual Vocabulary Pre-Training for Novel Object Captioning</h1><p>论文<a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/16249/16056">链接</a></p>
+<h4 id="Main-idea："><a href="#Main-idea：" class="headerlink" title="Main idea："></a>Main idea：</h4><p>当描述一个training data中没有的novel objects时，现有的VLP方法就不可用了。这个工作提出了一种方法在缺少caption 标注的情况下也能进行预训练。方法能够利用大量的成对的image-tag数据学习一个visual vocabulary。方法预训练了一个多层multilayer transformer模型，利用相应的image feature学习预测image-level的tags。</p>
+<h4 id="Introduction-4"><a href="#Introduction-4" class="headerlink" title="Introduction"></a>Introduction</h4><p>之前的image captioning方法在in-the-wild数据上没有很好的结果。nocaps benchmark被构建，用于评估unseen data对captioning 方法的影响。这个工作提出利用大量可用的没有caption的vision 数据学习visual vocabulary。在预训练时，语义信息相近的tags，image region feature被映射到相近的vectors。然后利用image-caption对微调model，在inference时可以推测出fine-tuning中没有见到的object。</p>
+<img src="/2021/12/06/text-image/image-20211221171019691.png" alt="image-20211221171019691" style="zoom:50%;">
+
+<h4 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h4><p><img src="/2021/12/06/text-image/image-20211221172726779.png" alt="image-20211221172726779"></p>
+<p>方法利用大量的image-tag 对预训练image captioning models。方法包括两个stages。第一阶段image captions model 学习利用tags标注image regions。第二阶段给定image-captions对和detected object tags，模型学习基于detected objects将image map为一个sentence。由于tags相比较于caption有着更多的类别，因此能够对没见过的object caption到正确的信息。模型基于multiple transformer layer。</p>
+<p>Pretraining：</p>
+<p>在一个large-scale dataset with abundant tags。这里的tags指的是图片中的visual objects。pretraining中将提取的图片中的多个特征和tag tokens输入到transformer中，训练时随机的mask一些token，让model去预测masked token。这里为了考虑tag顺序，利用了一个the Hungarian matching loss。</p>
+<p>Fine-tuning和inference</p>
+<p>fine-tuning给定image regions，tags，models学习预测某些位置被mask的caption token。目标通过image，tags，caption预测caption中masked tokens。</p>
+<p>inference时首先提取图片的region feature，然后检测image的tags。然后逐个的输出token。</p>
 
       
     </div>
@@ -401,6 +454,10 @@
   <div class="bar-inner">
   
   <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2021/12/15/tools/" title="tools"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
     
     
     <li class="next">
